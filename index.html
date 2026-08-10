@@ -801,19 +801,52 @@ function findVoice() {
   return cn || null;
 }
 
+/* 文本→文件名哈希（与生成脚本一致） */
+function hashText(s) {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0;
+  return h.toString(16);
+}
+
+let currentAudio = null;
+
+/* 优先播放本地预录制的粤语音频；失败/不存在则返回 false 让调用方回退 */
+function playAudio(text, rate) {
+  return new Promise(resolve => {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    const audio = new Audio("audio/" + hashText(text) + ".mp3");
+    currentAudio = audio;
+    let settled = false;
+    const finish = ok => { if (!settled) { settled = true; clearTimeout(timer); resolve(ok); } };
+    const timer = setTimeout(() => finish(false), 3500);
+    audio.onerror = () => finish(false);
+    audio.onended = () => { if (currentAudio === audio) currentAudio = null; };
+    audio.play().then(() => finish(true)).catch(() => finish(false));
+    if (rate !== undefined) {
+      try { audio.preservePitch = true; } catch (e) { /* 兼容性 */ }
+      audio.playbackRate = Math.max(0.5, Math.min(1.2, rate));
+    }
+  });
+}
+
 function speak(text, rate) {
-  if (!("speechSynthesis" in window)) {
-    alert("当前浏览器不支持语音合成，建议使用 Chrome / Edge 打开本页面。");
-    return;
-  }
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  const v = findVoice();
-  if (v) u.voice = v;
-  u.lang = v ? v.lang : "zh-HK";
-  u.rate = rate !== undefined ? rate : parseFloat($("#rate").value);
-  u.pitch = parseFloat($("#pitch").value);
-  speechSynthesis.speak(u);
+  const r = rate !== undefined ? rate : parseFloat($("#rate").value);
+  playAudio(text, r).then(ok => {
+    if (ok) return;
+    // 回退：系统语音合成（设备装了粤语语音则用粤语）
+    if (!("speechSynthesis" in window)) {
+      alert("当前环境不支持语音合成，请使用 Chrome / Edge 打开。");
+      return;
+    }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = findVoice();
+    if (v) u.voice = v;
+    u.lang = v ? v.lang : "zh-HK";
+    u.rate = r;
+    u.pitch = parseFloat($("#pitch").value);
+    speechSynthesis.speak(u);
+  });
 }
 
 /* 发音设置面板 */
