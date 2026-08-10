@@ -6,6 +6,7 @@
 <title>粤讲粤掂 · 粤语学习</title>
 <link rel="icon" href="data:,">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="theme-color" content="#c1440e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="粤讲粤掂">
@@ -1060,6 +1061,14 @@ $("#quiz-back").addEventListener("click", () => {
 });
 
 /* ---------- 初始化 ---------- */
+/* PWA：仅在线上(https)注册 Service Worker，实现离线可用 + 可安装为 App；
+   本地 file:// 或 http://localhost 不注册，避免干扰。 */
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+
 renderDaily();
 renderTones();
 renderPhonemes();
