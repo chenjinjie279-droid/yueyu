@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>粤讲粤掂 · 粤语学习</title>
+<link rel="icon" href="data:,">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#c1440e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="粤讲粤掂">
+<meta name="mobile-web-app-capable" content="yes">
+<style>
+/* ===== 基础 ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #f7f3ea;
+  --card: #ffffff;
+  --ink: #2d2a26;
+  --muted: #8a8177;
+  --brand: #c1440e;      /* 港式烧腊橙红 */
+  --brand-dark: #a03a0c;
+  --accent: #1d7a5f;     /* 奶茶绿 */
+  --line: #e8e1d4;
+  --gold: #e9b44c;
+  --radius: 14px;
+  --shadow: 0 2px 10px rgba(45, 42, 38, .07);
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.6;
+  padding-bottom: 80px;
+}
+
+/* ===== 顶栏 ===== */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: linear-gradient(135deg, #d94f16, var(--brand));
+  color: #fff;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  box-shadow: 0 2px 12px rgba(0,0,0,.15);
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--gold); color: #5a3a00;
+  display: grid; place-items: center;
+  font-size: 22px; font-weight: 800;
+}
+.brand h1 { font-size: 20px; line-height: 1.2; }
+.brand-sub { font-size: 12px; opacity: .85; }
+
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab {
+  border: none; background: rgba(255,255,255,.14); color: #fff;
+  padding: 8px 16px; border-radius: 999px; cursor: pointer;
+  font-size: 14px; transition: all .15s;
+}
+.tab:hover { background: rgba(255,255,255,.28); }
+.tab.active { background: #fff; color: var(--brand-dark); font-weight: 700; }
+
+/* ===== 页面容器 ===== */
+main { max-width: 1080px; margin: 24px auto 0; padding: 0 16px; }
+.page { display: none; }
+.page.active-page { display: block; animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.card {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 20px; margin-bottom: 18px;
+}
+.card h2 { font-size: 19px; margin-bottom: 8px; }
+.card h3 { font-size: 16px; margin-bottom: 8px; color: var(--brand-dark); }
+.hint { font-size: 13px; color: var(--muted); }
+code {
+  background: #f4efe4; border: 1px solid var(--line);
+  border-radius: 5px; padding: 1px 6px; font-size: .9em;
+  color: var(--accent); font-family: Consolas, monospace;
+}
+
+/* ===== 按钮 ===== */
+.btn {
+  border: 1px solid var(--line); background: #fff; color: var(--ink);
+  padding: 9px 18px; border-radius: 999px; cursor: pointer;
+  font-size: 14px; transition: all .15s;
+}
+.btn:hover { border-color: var(--brand); color: var(--brand); }
+.btn.primary { background: var(--brand); border-color: var(--brand); color: #fff; font-weight: 700; }
+.btn.primary:hover { background: var(--brand-dark); color: #fff; }
+.btn.small { padding: 5px 12px; font-size: 13px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.hero { background: linear-gradient(135deg, #fff8ec, #ffe8d6); border-color: #f3d9b8; }
+.hero h2 { font-size: 22px; }
+.hero-actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 760px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.roadmap { padding-left: 20px; }
+.roadmap li { margin-bottom: 6px; }
+.tips { padding-left: 20px; }
+.tips li { margin-bottom: 8px; }
+
+/* ===== 声调图 ===== */
+.tone-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 6px; }
+.tone-card {
+  border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px;
+  background: #fdfbf7; text-align: center; cursor: pointer; min-width: 84px;
+  transition: all .15s;
+}
+.tone-card:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: var(--shadow); }
+.tone-num { font-size: 12px; color: var(--brand); font-weight: 800; }
+.tone-syl { font-size: 20px; font-weight: 800; }
+.tone-word { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.tone-chart-svg { width: 100%; max-width: 460px; margin-top: 10px; }
+
+/* ===== 音素表 ===== */
+.ph-table { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-top: 10px; }
+.ph-item {
+  border: 1px solid var(--line); border-radius: 10px; padding: 8px;
+  text-align: center; cursor: pointer; background: #fdfbf7; transition: all .15s;
+}
+.ph-item:hover { border-color: var(--brand); background: #fff5ec; }
+.ph-item .ph-sym { font-size: 17px; font-weight: 800; color: var(--brand-dark); }
+.ph-item .ph-ex { font-size: 12px; color: var(--muted); }
+
+/* ===== 词汇 ===== */
+.vocab-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 10px; }
+.vocab-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.vtab {
+  border: 1px solid var(--line); background: #fff; color: var(--muted);
+  padding: 6px 14px; border-radius: 999px; cursor: pointer; font-size: 13px;
+}
+.vtab.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; }
+
+.vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.vcard {
+  border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+  background: #fdfbf7; display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  transition: all .15s; cursor: pointer;
+}
+.vcard:hover { border-color: var(--brand); transform: translateY(-2px); box-shadow: var(--shadow); }
+.vcard.fav { border-color: var(--gold); background: #fff9e8; }
+.vcard .vc-left { flex: 1; min-width: 0; }
+.vc-han { font-size: 19px; font-weight: 800; }
+.vc-jy { font-size: 13px; color: var(--accent); font-weight: 700; }
+.vc-mean { font-size: 12px; color: var(--muted); }
+.vcard .vc-right { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.speak-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--line); background: #fff; cursor: pointer;
+  font-size: 15px; transition: all .15s; display: grid; place-items: center;
+}
+.speak-btn:hover { background: #fff5ec; border-color: var(--brand); }
+.fav-btn { border: none; background: none; cursor: pointer; font-size: 15px; opacity: .45; }
+.fav-btn.active { opacity: 1; }
+
+/* ===== 会话 ===== */
+.phrase-row {
+  border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 12px;
+  background: #fdfbf7;
+}
+.phrase-row:hover { border-color: var(--brand); }
+.phr-main { flex: 1; }
+.phr-han { font-size: 18px; font-weight: 800; }
+.phr-jy { font-size: 13px; color: var(--accent); font-weight: 700; }
+.phr-mean { font-size: 13px; color: var(--muted); }
+.phr-actions { display: flex; flex-direction: column; gap: 6px; }
+
+/* ===== 测验 ===== */
+.quiz-options { display: flex; flex-direction: column; gap: 8px; margin: 12px 0; }
+.quiz-options label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.quiz-progress { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: var(--muted); }
+.quiz-question { font-size: 26px; font-weight: 800; text-align: center; margin: 16px 0 18px; }
+.quiz-question .sub { display: block; font-size: 14px; font-weight: 400; color: var(--muted); margin-top: 4px; }
+.quiz-answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 600px) { .quiz-answers { grid-template-columns: 1fr; } }
+.q-answer {
+  border: 2px solid var(--line); border-radius: 12px; padding: 14px;
+  font-size: 18px; cursor: pointer; background: #fff; transition: all .12s;
+}
+.q-answer:hover { border-color: var(--brand); }
+.q-answer.correct { border-color: var(--accent); background: #e9f7f1; }
+.q-answer.wrong { border-color: #d33; background: #fdecec; }
+.quiz-feedback { margin-top: 12px; min-height: 26px; font-size: 15px; }
+.quiz-feedback.ok { color: var(--accent); }
+.quiz-feedback.no { color: #c0392b; }
+#quiz-next { margin-top: 12px; }
+
+.wrong-item { border: 1px solid #f0c9c4; background: #fdf1f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; }
+.wrong-item b { color: #c0392b; }
+
+.hidden { display: none !important; }
+
+/* ===== 发音设置 ===== */
+.speech-settings {
+  position: fixed; right: 16px; bottom: 16px; z-index: 60;
+  background: #fff; border: 1px solid var(--line); border-radius: 999px;
+  box-shadow: var(--shadow); padding: 8px;
+}
+#speech-panel {
+  position: absolute; right: 0; bottom: 52px; width: 260px;
+  background: #fff; border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.15); padding: 14px;
+}
+#speech-panel label { display: block; margin-bottom: 10px; font-size: 13px; }
+#speech-panel input[type=range] { width: 100%; }
+
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 20px; }
+
+</style>
+</head>
+<body>
+<noscript>
+  <div style="background:#c0392b;color:#fff;padding:12px 20px;text-align:center;font-size:15px">
+    ⚠️ 本页面需要 JavaScript 才能显示内容。请用 Chrome / Edge 浏览器打开 index.html，并确保没有禁用脚本。
+  </div>
+</noscript>
+<div id="js-error-banner" style="display:none;background:#c0392b;color:#fff;padding:12px 20px;text-align:center;font-size:14px"></div>
+
+
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark">粤</span>
+    <div>
+      <h1>粤讲粤掂</h1>
+      <p class="brand-sub">粤语学习小助手 · Jyutping</p>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-page="home">首页</button>
+    <button class="tab" data-page="phonetics">粤拼入门</button>
+    <button class="tab" data-page="vocab">词汇</button>
+    <button class="tab" data-page="phrases">会话</button>
+    <button class="tab" data-page="quiz">测验</button>
+  </nav>
+</header>
+
+<main id="app">
+
+  <!-- ============ 首页 ============ -->
+  <section class="page home active-page" id="page-home">
+    <div class="hero card">
+      <h2>你好！唔好怕丑，一齐嚟学粤语啦～ 🎉</h2>
+      <p>从零开始学粤语：先学 <b>粤拼</b>（Jyutping），再记 <b>词汇</b>，然后练 <b>日常会话</b>，最后用 <b>测验</b> 巩固。全程点一下喇叭 🗣️ 就能听发音。</p>
+      <div class="hero-actions">
+        <button class="btn primary" onclick="go('phonetics')">开始学粤拼</button>
+        <button class="btn" onclick="go('quiz')">直接挑战测验</button>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>📌 今日一句</h3>
+        <div id="daily-phrase"></div>
+      </div>
+      <div class="card">
+        <h3>🎯 学习路线</h3>
+        <ol class="roadmap">
+          <li><b>学粤拼</b> —— 认识 6 个声调 + 声母韵母</li>
+          <li><b>记词汇</b> —— 按分类背常用词，边听边记</li>
+          <li><b>开口讲</b> —— 模仿会话句子，慢慢读</li>
+          <li><b>测验巩固</b> —— 测验错题自动收录</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>💡 学粤语小贴士</h3>
+      <ul class="tips">
+        <li>粤语有 <b>6 个声调</b>，同一个拼音声调不同意思就不同，例如 <code>si1</code>诗 / <code>si2</code>史 / <code>si3</code>试。</li>
+        <li><b>「唔」</b>读 <code>m4</code>，表示「不」，如「唔该」「唔紧要」。</li>
+        <li>书面语和口语有区别：「吃饭」口语说 <b>「食饭」</b>，「是」说 <b>「係」</b>，「他」说 <b>「佢」</b>。</li>
+        <li>把语速调慢（页面右下角发音设置），跟着一句一句模仿，是开口最快的路。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 粤拼入门 ============ -->
+  <section class="page phonetics" id="page-phonetics">
+    <div class="card">
+      <h2>🎵 粤语 6 个声调</h2>
+      <p>用数字标调（Jyutping）：<code>si1</code> 诗 · <code>si2</code> 史 · <code>si3</code> 试 · <code>si4</code> 时 · <code>si5</code> 市 · <code>si6</code> 事</p>
+      <div id="tone-chart"></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h2>🔤 声母（19 个）</h2>
+        <div id="initials"></div>
+      </div>
+      <div class="card">
+        <h2>🀄 韵母（56 个）</h2>
+        <p class="hint">韵母较多，先混个眼熟；重点记住带 <code>a</code>、<code>e</code>、<code>i</code>、<code>o</code>、<code>u</code>、<code>eo</code>、<code>yu</code> 的开头几组。</p>
+        <div id="finals"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 词汇 ============ -->
+  <section class="page vocab" id="page-vocab">
+    <div class="card">
+      <div class="vocab-head">
+        <h2>📚 分类词汇</h2>
+        <div id="vocab-tabs"></div>
+      </div>
+      <div id="vocab-grid" class="vocab-grid"></div>
+    </div>
+  </section>
+
+  <!-- ============ 会话 ============ -->
+  <section class="page phrases" id="page-phrases">
+    <div class="card">
+      <h2>💬 日常会话</h2>
+      <p class="hint">先听整句，再调慢语速逐句跟读，最后遮住粤拼试试能不能自己读出来。</p>
+      <div id="phrase-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ 测验 ============ -->
+  <section class="page quiz" id="page-quiz">
+    <div class="card" id="quiz-config">
+      <h2>🧠 测验</h2>
+      <p>10 题一轮。根据你的选择，从词汇和会话里出题。</p>
+      <div class="quiz-options">
+        <label><input type="radio" name="quizMode" value="py2han" checked> 看粤拼选汉字</label>
+        <label><input type="radio" name="quizMode" value="han2py"> 看汉字选粤拼</label>
+        <label><input type="radio" name="quizMode" value="mean2han"> 看意思选汉字</label>
+      </div>
+      <button class="btn primary" id="quiz-start">开始测验</button>
+    </div>
+
+    <div class="card hidden" id="quiz-box">
+      <div class="quiz-progress">
+        <span id="quiz-count">第 1 / 10 题</span>
+        <span id="quiz-score">得分 0</span>
+      </div>
+      <div class="quiz-question" id="quiz-question"></div>
+      <div class="quiz-answers" id="quiz-answers"></div>
+      <div class="quiz-feedback" id="quiz-feedback"></div>
+      <button class="btn" id="quiz-next" disabled>下一题</button>
+    </div>
+
+    <div class="card hidden" id="quiz-result">
+      <h2 id="quiz-result-title"></h2>
+      <p id="quiz-result-text"></p>
+      <div id="quiz-wrong-list"></div>
+      <button class="btn primary" id="quiz-again">再来一轮</button>
+      <button class="btn" id="quiz-back">返回配置</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- 发音设置 -->
+<div class="speech-settings">
+  <button class="btn small" id="toggle-settings">⚙️ 发音设置</button>
+  <div id="speech-panel" class="hidden">
+    <label>语速 <span id="rate-val">0.8</span>
+      <input type="range" id="rate" min="0.4" max="1.2" step="0.05" value="0.8">
+    </label>
+    <label>音高 <span id="pitch-val">1</span>
+      <input type="range" id="pitch" min="0.5" max="1.5" step="0.05" value="1">
+    </label>
+    <p class="hint">发音由浏览器语音合成提供。若没有粤语语音，会回退到普通话语音，仅供参考。</p>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+ * 粤语学习数据（Jyutping 粤拼，数字标调）
+ * ===================================================== */
+
+// 六个声调（以 si 为例）
+const TONES = [
+  { num: 1, syl: "si1", word: "诗", mean: "阴平（高平，55）" },
+  { num: 2, syl: "si2", word: "史", mean: "阴上（高升，35）" },
+  { num: 3, syl: "si3", word: "试", mean: "阴去（中平，33）" },
+  { num: 4, syl: "si4", word: "时", mean: "阳平（低降，21）" },
+  { num: 5, syl: "si5", word: "市", mean: "阳上（低升，23）" },
+  { num: 6, syl: "si6", word: "事", mean: "阳去（低平，22）" },
+];
+
+// 声母（19 个）
+const INITIALS = [
+  { sym: "b", ex: "波", jy: "bo1" },
+  { sym: "p", ex: "婆", jy: "po4" },
+  { sym: "m", ex: "妈", jy: "maa1" },
+  { sym: "f", ex: "花", jy: "faa1" },
+  { sym: "d", ex: "打", jy: "daa2" },
+  { sym: "t", ex: "他", jy: "taa1" },
+  { sym: "n", ex: "拿", jy: "naa4" },
+  { sym: "l", ex: "啦", jy: "laa1" },
+  { sym: "g", ex: "家", jy: "gaa1" },
+  { sym: "k", ex: "卡", jy: "kaa1" },
+  { sym: "ng", ex: "牙", jy: "ngaa4" },
+  { sym: "h", ex: "虾", jy: "haa1" },
+  { sym: "gw", ex: "瓜", jy: "gwaa1" },
+  { sym: "kw", ex: "夸", jy: "kwaa1" },
+  { sym: "w", ex: "娃", jy: "waa1" },
+  { sym: "z", ex: "渣", jy: "zaa1" },
+  { sym: "c", ex: "叉", jy: "caa1" },
+  { sym: "s", ex: "沙", jy: "saa1" },
+  { sym: "j", ex: "也", jy: "jaa5" },
+];
+
+// 韵母（常用组合）
+const FINALS = [
+  { sym: "aa", ex: "沙", jy: "saa1" },
+  { sym: "aai", ex: "晒", jy: "saai3" },
+  { sym: "aau", ex: "抄", jy: "caau1" },
+  { sym: "aam", ex: "三", jy: "saam1" },
+  { sym: "aan", ex: "山", jy: "saan1" },
+  { sym: "aang", ex: "生", jy: "saang1" },
+  { sym: "aap", ex: "集", jy: "zaap6" },
+  { sym: "aat", ex: "杀", jy: "saat3" },
+  { sym: "aak", ex: "客", jy: "haak3" },
+  { sym: "ai", ex: "西", jy: "sai1" },
+  { sym: "au", ex: "收", jy: "sau1" },
+  { sym: "am", ex: "心", jy: "sam1" },
+  { sym: "an", ex: "新", jy: "san1" },
+  { sym: "ang", ex: "崩", jy: "bang1" },
+  { sym: "ap", ex: "十", jy: "sap6" },
+  { sym: "at", ex: "七", jy: "cat1" },
+  { sym: "ak", ex: "北", jy: "bak1" },
+  { sym: "e", ex: "车", jy: "ce1" },
+  { sym: "ei", ex: "你", jy: "nei5" },
+  { sym: "eu", ex: "掉", jy: "deu6" },
+  { sym: "em", ex: "冧", jy: "lam3" },
+  { sym: "en", ex: "恩", jy: "jan1" },
+  { sym: "eng", ex: "靓", jy: "leng3" },
+  { sym: "ep", ex: "夹", jy: "gep6" },
+  { sym: "et", ex: "坲", jy: "fet6" },
+  { sym: "ek", ex: "石", jy: "sek6" },
+  { sym: "i", ex: "诗", jy: "si1" },
+  { sym: "iu", ex: "少", jy: "siu2" },
+  { sym: "im", ex: "尖", jy: "zim1" },
+  { sym: "in", ex: "先", jy: "sin1" },
+  { sym: "ing", ex: "星", jy: "sing1" },
+  { sym: "ip", ex: "贴", jy: "tip3" },
+  { sym: "it", ex: "必", jy: "bit1" },
+  { sym: "ik", ex: "识", jy: "sik1" },
+  { sym: "o", ex: "多", jy: "do1" },
+  { sym: "oi", ex: "来", jy: "loi4" },
+  { sym: "ou", ex: "好", jy: "hou2" },
+  { sym: "on", ex: "干", jy: "gon1" },
+  { sym: "ong", ex: "港", jy: "gong2" },
+  { sym: "ot", ex: "喝", jy: "hot3" },
+  { sym: "ok", ex: "学", jy: "hok6" },
+  { sym: "u", ex: "夫", jy: "fu1" },
+  { sym: "ui", ex: "杯", jy: "bui1" },
+  { sym: "un", ex: "搬", jy: "bun1" },
+  { sym: "ung", ex: "东", jy: "dung1" },
+  { sym: "ut", ex: "阔", jy: "fut3" },
+  { sym: "uk", ex: "屋", jy: "uk1" },
+  { sym: "eo", ex: "水", jy: "seoi2" },
+  { sym: "eoi", ex: "追", jy: "zeoi1" },
+  { sym: "eon", ex: "春", jy: "ceon1" },
+  { sym: "eong", ex: "香", jy: "hoeng1" },
+  { sym: "eot", ex: "出", jy: "ceot1" },
+  { sym: "eok", ex: "脚", jy: "goek3" },
+  { sym: "yu", ex: "书", jy: "syu1" },
+  { sym: "yun", ex: "酸", jy: "syun1" },
+  { sym: "yut", ex: "雪", jy: "syut3" },
+  { sym: "m", ex: "唔", jy: "m4" },
+  { sym: "ng", ex: "五", jy: "ng5" },
+];
+
+// 词汇分类
+const VOCAB = [
+  {
+    cat: "问候礼貌",
+    items: [
+      { han: "你好", jy: "nei5 hou2", mean: "你好" },
+      { han: "早晨", jy: "zou2 san4", mean: "早上好" },
+      { han: "再见", jy: "zoi3 gin3", mean: "再见" },
+      { han: "唔该", jy: "m4 goi1", mean: "谢谢 / 劳驾" },
+      { han: "多谢", jy: "do1 ze6", mean: "谢谢" },
+      { han: "对唔住", jy: "deoi3 m4 zyu6", mean: "对不起" },
+      { han: "唔紧要", jy: "m4 gan2 jiu3", mean: "没关系" },
+      { han: "冇问题", jy: "mou5 man6 tai4", mean: "没问题" },
+      { han: "唔好意思", jy: "m4 hou2 ji3 si1", mean: "不好意思" },
+      { han: "拜拜", jy: "baai1 baai3", mean: "再见（bye bye）" },
+    ],
+  },
+  {
+    cat: "数字",
+    items: [
+      { han: "一", jy: "jat1", mean: "一" },
+      { han: "二", jy: "ji6", mean: "二" },
+      { han: "三", jy: "saam1", mean: "三" },
+      { han: "四", jy: "sei3", mean: "四" },
+      { han: "五", jy: "ng5", mean: "五" },
+      { han: "六", jy: "luk6", mean: "六" },
+      { han: "七", jy: "cat1", mean: "七" },
+      { han: "八", jy: "baat3", mean: "八" },
+      { han: "九", jy: "gau2", mean: "九" },
+      { han: "十", jy: "sap6", mean: "十" },
+      { han: "百", jy: "baak3", mean: "百" },
+      { han: "千", jy: "cin1", mean: "千" },
+      { han: "万", jy: "maan6", mean: "万" },
+      { han: "零", jy: "ling4", mean: "零" },
+    ],
+  },
+  {
+    cat: "人称家庭",
+    items: [
+      { han: "我", jy: "ngo5", mean: "我" },
+      { han: "你", jy: "nei5", mean: "你" },
+      { han: "佢", jy: "keoi5", mean: "他 / 她" },
+      { han: "我哋", jy: "ngo5 dei6", mean: "我们" },
+      { han: "你哋", jy: "nei5 dei6", mean: "你们" },
+      { han: "佢哋", jy: "keoi5 dei6", mean: "他们" },
+      { han: "爸爸", jy: "baa4 baa1", mean: "爸爸" },
+      { han: "妈妈", jy: "maa4 maa1", mean: "妈妈" },
+      { han: "哥哥", jy: "go4 go1", mean: "哥哥" },
+      { han: "姐姐", jy: "ze4 ze1", mean: "姐姐" },
+      { han: "屋企", jy: "uk1 kei2", mean: "家" },
+      { han: "朋友", jy: "pang4 jau5", mean: "朋友" },
+      { han: "细路", jy: "sai3 lou6", mean: "小孩子" },
+    ],
+  },
+  {
+    cat: "饮食",
+    items: [
+      { han: "食饭", jy: "sik6 faan6", mean: "吃饭" },
+      { han: "早餐", jy: "zou2 caan1", mean: "早餐" },
+      { han: "午餐", jy: "ng5 caan1", mean: "午餐" },
+      { han: "晚餐", jy: "maan5 caan1", mean: "晚餐" },
+      { han: "水", jy: "seoi2", mean: "水" },
+      { han: "茶", jy: "caa4", mean: "茶" },
+      { han: "咖啡", jy: "gaa3 fe1", mean: "咖啡" },
+      { han: "奶茶", jy: "naai5 caa4", mean: "奶茶" },
+      { han: "菠萝包", jy: "bo1 lo4 baau1", mean: "菠萝包" },
+      { han: "蛋", jy: "daan2", mean: "鸡蛋" },
+      { han: "鸡", jy: "gai1", mean: "鸡" },
+      { han: "鱼", jy: "jyu4", mean: "鱼" },
+      { han: "猪肉", jy: "zyu1 juk6", mean: "猪肉" },
+      { han: "牛肉", jy: "ngau4 juk6", mean: "牛肉" },
+      { han: "蔬菜", jy: "so1 coi3", mean: "蔬菜" },
+      { han: "生果", jy: "saang1 gwo2", mean: "水果（口语）" },
+      { han: "香蕉", jy: "hoeng1 ziu1", mean: "香蕉" },
+      { han: "西瓜", jy: "sai1 gwaa1", mean: "西瓜" },
+      { han: "提子", jy: "tai4 zi2", mean: "葡萄" },
+      { han: "饭", jy: "faan6", mean: "米饭" },
+      { han: "粥", jy: "zuk1", mean: "粥" },
+      { han: "面", jy: "min6", mean: "面条" },
+      { han: "饮", jy: "jam2", mean: "喝" },
+      { han: "食", jy: "sik6", mean: "吃" },
+      { han: "饿", jy: "ngo6", mean: "饿" },
+      { han: "饱", jy: "baau2", mean: "饱" },
+    ],
+  },
+  {
+    cat: "时间",
+    items: [
+      { han: "今日", jy: "gam1 jat6", mean: "今天" },
+      { han: "听日", jy: "ting1 jat6", mean: "明天" },
+      { han: "寻日", jy: "cam4 jat6", mean: "昨天" },
+      { han: "而家", jy: "ji4 gaa1", mean: "现在" },
+      { han: "上昼", jy: "soeng6 zau3", mean: "上午" },
+      { han: "下昼", jy: "haa6 zau3", mean: "下午" },
+      { han: "夜晚", jy: "je6 maan5", mean: "晚上" },
+      { han: "钟头", jy: "zung1 tau4", mean: "小时" },
+      { han: "分钟", jy: "fan1 zung1", mean: "分钟" },
+      { han: "礼拜", jy: "lai5 baai3", mean: "星期" },
+      { han: "礼拜一", jy: "lai5 baai3 jat1", mean: "星期一" },
+      { han: "几点", jy: "gei2 dim2", mean: "几点" },
+    ],
+  },
+  {
+    cat: "出行地方",
+    items: [
+      { han: "去", jy: "heoi3", mean: "去" },
+      { han: "返来", jy: "faan1 lai4", mean: "回来" },
+      { han: "边度", jy: "bin1 dou6", mean: "哪里" },
+      { han: "呢度", jy: "ni1 dou6", mean: "这里" },
+      { han: "嗰度", jy: "go2 dou6", mean: "那里" },
+      { han: "街", jy: "gaai1", mean: "街 / 逛街" },
+      { han: "巴士", jy: "baa1 si2", mean: "公交车" },
+      { han: "地铁", jy: "dei6 tit3", mean: "地铁" },
+      { han: "的士", jy: "dik1 si2", mean: "出租车" },
+      { han: "机场", jy: "gei1 coeng4", mean: "机场" },
+      { han: "车站", jy: "ce1 zaam6", mean: "车站" },
+      { han: "行", jy: "hang4", mean: "走" },
+      { han: "搭", jy: "daap3", mean: "搭（车）" },
+      { han: "转左", jy: "zyun3 zo2", mean: "左转" },
+      { han: "转右", jy: "zyun3 jau6", mean: "右转" },
+    ],
+  },
+  {
+    cat: "日常动词",
+    items: [
+      { han: "买", jy: "maai5", mean: "买" },
+      { han: "卖", jy: "maai6", mean: "卖" },
+      { han: "睇", jy: "tai2", mean: "看" },
+      { han: "听", jy: "teng1", mean: "听" },
+      { han: "讲", jy: "gong2", mean: "说" },
+      { han: "学", jy: "hok6", mean: "学" },
+      { han: "识", jy: "sik1", mean: "认识 / 会" },
+      { han: "知", jy: "zi1", mean: "知道" },
+      { han: "要", jy: "jiu3", mean: "要" },
+      { han: "有", jy: "jau5", mean: "有" },
+      { han: "冇", jy: "mou5", mean: "没有" },
+      { han: "钟意", jy: "zung1 ji3", mean: "喜欢" },
+      { han: "瞓觉", jy: "fan3 gaau3", mean: "睡觉" },
+      { han: "冲凉", jy: "cung1 loeng4", mean: "洗澡" },
+      { han: "返工", jy: "faan1 gung1", mean: "上班" },
+    ],
+  },
+  {
+    cat: "描述词",
+    items: [
+      { han: "好", jy: "hou2", mean: "好 / 很" },
+      { han: "唔好", jy: "m4 hou2", mean: "不好" },
+      { han: "靓", jy: "leng3", mean: "漂亮 / 好" },
+      { han: "大", jy: "daai6", mean: "大" },
+      { han: "细", jy: "sai3", mean: "小" },
+      { han: "快", jy: "faai3", mean: "快" },
+      { han: "慢", jy: "maan6", mean: "慢" },
+      { han: "平", jy: "peng4", mean: "便宜" },
+      { han: "贵", jy: "gwai3", mean: "贵" },
+      { han: "热", jy: "jit6", mean: "热" },
+      { han: "冻", jy: "dung3", mean: "冷" },
+      { han: "攰", jy: "gui6", mean: "累" },
+      { han: "开心", jy: "hoi1 sam1", mean: "开心" },
+      { han: "伤心", jy: "soeng1 sam1", mean: "伤心" },
+      { han: "嬲", jy: "nau1", mean: "生气" },
+      { han: "惊", jy: "geng1", mean: "害怕" },
+      { han: "好睇", jy: "hou2 tai2", mean: "好看" },
+      { han: "好食", jy: "hou2 sik6", mean: "好吃" },
+      { han: "难食", jy: "naan4 sik6", mean: "难吃" },
+    ],
+  },
+  {
+    cat: "物品",
+    items: [
+      { han: "钱", jy: "cin2", mean: "钱" },
+      { han: "衫", jy: "saam1", mean: "衣服" },
+      { han: "裤", jy: "fu3", mean: "裤子" },
+      { han: "鞋", jy: "haai4", mean: "鞋子" },
+      { han: "帽", jy: "mou2", mean: "帽子" },
+      { han: "雨遮", jy: "jyu5 ze1", mean: "雨伞" },
+      { han: "电话", jy: "din6 waa2", mean: "电话" },
+      { han: "手机", jy: "sau2 gei1", mean: "手机" },
+      { han: "电脑", jy: "din6 nou5", mean: "电脑" },
+      { han: "电视", jy: "din6 si6", mean: "电视" },
+      { han: "书", jy: "syu1", mean: "书" },
+      { han: "笔", jy: "bat1", mean: "笔" },
+      { han: "雪柜", jy: "syut3 gwai6", mean: "冰箱" },
+      { han: "雪糕", jy: "syut3 gou1", mean: "冰淇淋" },
+      { han: "汽水", jy: "hei3 seoi2", mean: "汽水 / 饮料" },
+      { han: "厕所", jy: "ci3 so2", mean: "厕所" },
+      { han: "厨房", jy: "cyu4 fong2", mean: "厨房" },
+      { han: "冷气", jy: "laang5 hei3", mean: "空调" },
+    ],
+  },
+];
+
+// 日常会话
+const PHRASES = [
+  { han: "你好！我係小明。", jy: "nei5 hou2! ngo5 hai6 siu2 ming4.", mean: "你好！我是小明。" },
+  { han: "你叫咩名？", jy: "nei5 giu3 me1 meng2?", mean: "你叫什么名字？" },
+  { han: "我係香港人。", jy: "ngo5 hai6 hoeng1 gong2 jan4.", mean: "我是香港人。" },
+  { han: "你识唔识讲粤语？", jy: "nei5 sik1 m4 sik1 gong2 jyut6 jyu5?", mean: "你会不会说粤语？" },
+  { han: "我识少少。", jy: "ngo5 sik1 siu2 siu2.", mean: "我会一点点。" },
+  { han: "唔该晒！", jy: "m4 goi1 saai3!", mean: "非常感谢！" },
+  { han: "早晨！", jy: "zou2 san4!", mean: "早上好！" },
+  { han: "食咗饭未？", jy: "sik6 zo2 faan6 mei6?", mean: "吃饭了吗？" },
+  { han: "我食咗啦。", jy: "ngo5 sik6 zo2 laa1.", mean: "我吃过了。" },
+  { han: "呢个几钱？", jy: "ni1 go3 gei2 cin2?", mean: "这个多少钱？" },
+  { han: "可唔可以平啲？", jy: "ho2 m4 ho2 ji5 peng4 di1?", mean: "可以便宜一点吗？" },
+  { han: "我要去机场。", jy: "ngo5 jiu3 heoi3 gei1 coeng4.", mean: "我要去机场。" },
+  { han: "唔该借借。", jy: "m4 goi1 ze3 ze3.", mean: "劳驾，借过一下。" },
+  { han: "我听唔明。", jy: "ngo5 teng1 m4 ming4.", mean: "我听不懂。" },
+  { han: "请讲慢啲。", jy: "ceng2 gong2 maan6 di1.", mean: "请说慢一点。" },
+  { han: "我好开心。", jy: "ngo5 hou2 hoi1 sam1.", mean: "我很开心。" },
+  { han: "多谢你。", jy: "do1 ze6 nei5.", mean: "谢谢你。" },
+  { han: "对唔住。", jy: "deoi3 m4 zyu6.", mean: "对不起。" },
+  { han: "我钟意食菠萝包。", jy: "ngo5 zung1 ji3 sik6 bo1 lo4 baau1.", mean: "我喜欢吃菠萝包。" },
+  { han: "听日见！", jy: "ting1 jat6 gin3!", mean: "明天见！" },
+  { han: "得闲饮茶。", jy: "dak1 haan4 jam2 caa4.", mean: "有空喝茶（约茶楼）。" },
+  { han: "系唔系呀？", jy: "hai6 m4 hai6 aa3?", mean: "是不是呀？" },
+  { han: "我好攰。", jy: "ngo5 hou2 gui6.", mean: "我很累。" },
+  { han: "我返屋企。", jy: "ngo5 faan1 uk1 kei2.", mean: "我回家。" },
+  { han: "唔该，一杯奶茶。", jy: "m4 goi1, jat1 bui1 naai5 caa4.", mean: "麻烦来一杯奶茶。" },
+  { han: "洗手间喺边度？", jy: "sai2 sau2 gaan1 hai2 bin1 dou6?", mean: "洗手间在哪里？" },
+  { han: "听日我哋一齐去啦。", jy: "ting1 jat6 ngo5 dei6 jat1 cai4 heoi3 laa1.", mean: "明天我们一起去吧。" },
+  { han: "你几时得闲？", jy: "nei5 gei2 si4 dak1 haan4?", mean: "你什么时候有空？" },
+  { han: "我好钟意你。", jy: "ngo5 hou2 zung1 ji3 nei5.", mean: "我很喜欢你。" },
+  { han: "埋单，唔该。", jy: "maai4 daan1, m4 goi1.", mean: "买单，谢谢。" },
+];
+
+</script>
+<script>
+/* =====================================================
+ * 粤讲粤掂 · 应用逻辑
+ * ===================================================== */
+
+/* 自检：捕获 JS 错误，显示在页面顶部红条（便于诊断） */
+window.addEventListener("error", e => {
+  const banner = document.getElementById("js-error-banner");
+  if (!banner) return;
+  banner.style.display = "block";
+  banner.textContent = "⚠️ 页面脚本出错：" + (e.message || "未知错误") +
+    "。建议用最新版 Chrome / Edge 双击打开 index.html。";
+});
+window.addEventListener("unhandledrejection", e => {
+  const banner = document.getElementById("js-error-banner");
+  if (!banner) return;
+  banner.style.display = "block";
+  banner.textContent = "⚠️ 页面脚本出错（异步）：" + (e.reason && e.reason.message ? e.reason.message : e.reason) +
+    "。建议用最新版 Chrome / Edge 双击打开 index.html。";
+});
+
+/* ---------- 通用工具 ---------- */
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return Array.from(document.querySelectorAll(sel)); }
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, c => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function pick(arr, n) { return shuffle(arr).slice(0, n); }
+
+/* ---------- 页面切换 ---------- */
+function go(page) {
+  $$(".page").forEach(p => p.classList.remove("active-page"));
+  const target = document.getElementById("page-" + page);
+  if (target) target.classList.add("active-page");
+  $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.page === page));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+$$(".tab").forEach(t => t.addEventListener("click", () => go(t.dataset.page)));
+
+/* ---------- 语音合成 ---------- */
+let voices = [];
+function loadVoices() { voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; }
+if ("speechSynthesis" in window) {
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function findVoice() {
+  const yue = voices.find(v =>
+    /cantonese|yue|粵|粤/i.test(v.name) || /^yue/i.test(v.lang) || /^zh[-_]HK/i.test(v.lang));
+  if (yue) return yue;
+  const tw = voices.find(v => /^zh[-_]TW/i.test(v.lang));
+  if (tw) return tw;
+  const cn = voices.find(v => /^zh/i.test(v.lang));
+  return cn || null;
+}
+
+function speak(text, rate) {
+  if (!("speechSynthesis" in window)) {
+    alert("当前浏览器不支持语音合成，建议使用 Chrome / Edge 打开本页面。");
+    return;
+  }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const v = findVoice();
+  if (v) u.voice = v;
+  u.lang = v ? v.lang : "zh-HK";
+  u.rate = rate !== undefined ? rate : parseFloat($("#rate").value);
+  u.pitch = parseFloat($("#pitch").value);
+  speechSynthesis.speak(u);
+}
+
+/* 发音设置面板 */
+$("#toggle-settings").addEventListener("click", () => {
+  $("#speech-panel").classList.toggle("hidden");
+});
+$("#rate").addEventListener("input", e => { $("#rate-val").textContent = e.target.value; });
+$("#pitch").addEventListener("input", e => { $("#pitch-val").textContent = e.target.value; });
+
+/* ---------- 首页：今日一句 ---------- */
+function renderDaily() {
+  const p = PHRASES[Math.floor(Math.random() * PHRASES.length)];
+  $("#daily-phrase").innerHTML =
+    `<div class="phrase-row">
+       <div class="phr-main">
+         <div class="phr-han">${esc(p.han)}</div>
+         <div class="phr-jy">${esc(p.jy)}</div>
+         <div class="phr-mean">${esc(p.mean)}</div>
+       </div>
+       <div class="phr-actions">
+         <button class="speak-btn" title="慢速听" onclick="speak('${esc(p.han)}', 0.6)">🐢</button>
+         <button class="speak-btn" title="常速听" onclick="speak('${esc(p.han)}')">🗣️</button>
+       </div>
+     </div>`;
+}
+
+/* ---------- 声调图（SVG 六线图） ---------- */
+function renderTones() {
+  const cards = TONES.map(t => `
+    <div class="tone-card" onclick="speak('${t.word}')">
+      <div class="tone-num">${t.num} 调</div>
+      <div class="tone-syl">${t.syl}</div>
+      <div class="tone-word">${t.word}</div>
+    </div>`).join("");
+
+  // 调值轮廓：1高平55 2高升35 3中平33 4低降21 5低升23 6低平22
+  const contours = [
+    [5, 5], [3, 5], [3, 3], [2, 1], [2, 3], [2, 2]
+  ];
+  const yOf = t => 12 + (5 - t) * 15; // 5→12, 1→72
+  const lines = contours.map((c, i) => {
+    const x1 = 20, x2 = 110;
+    const y1 = yOf(c[0]), y2 = yOf(c[1]);
+    const mid = (x1 + x2) / 2;
+    const curve = c[0] !== c[1]
+      ? `C ${mid} ${y1} ${mid} ${y2} ${x2} ${y2}`
+      : `L ${x2} ${y2}`;
+    return `<path d="M ${x1} ${y1} ${curve}" fill="none" stroke="#c1440e" stroke-width="4" stroke-linecap="round"/>
+            <text x="${x2 + 8}" y="${(y1 + y2) / 2 + 4}" font-size="14" fill="#1d7a5f" font-weight="bold">${i + 1}</text>`;
+  }).join("");
+  const grid = [1, 2, 3, 4, 5].map(t =>
+    `<line x1="14" y1="${yOf(t)}" x2="128" y2="${yOf(t)}" stroke="#e8e1d4" stroke-dasharray="3 4"/>
+     <text x="2" y="${yOf(t) + 4}" font-size="10" fill="#a99f90">${t}</text>`).join("");
+
+  $("#tone-chart").innerHTML = `
+    <div class="tone-row">${cards}</div>
+    <svg class="tone-chart-svg" viewBox="0 0 150 88" aria-label="六声调走势图">
+      ${grid}${lines}
+    </svg>`;
+}
+
+/* ---------- 声母 / 韵母 ---------- */
+function renderPhonemes() {
+  $("#initials").innerHTML = `<div class="ph-table">` + INITIALS.map(p =>
+    `<div class="ph-item" onclick="speak('${p.ex}')">
+       <div class="ph-sym">${p.sym}</div>
+       <div class="ph-ex">${p.ex} ${p.jy}</div>
+     </div>`).join("") + `</div>`;
+
+  $("#finals").innerHTML = `<div class="ph-table">` + FINALS.map(p =>
+    `<div class="ph-item" onclick="speak('${p.ex}')">
+       <div class="ph-sym">${p.sym}</div>
+       <div class="ph-ex">${p.ex} ${p.jy}</div>
+     </div>`).join("") + `</div>`;
+}
+
+/* ---------- 词汇 ---------- */
+const FAV_KEY = "yue_favs";
+function getFavs() {
+  try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
+  catch (e) { return []; }
+}
+function saveFavs(favs) { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); }
+function toggleFav(han) {
+  let favs = getFavs();
+  favs = favs.includes(han) ? favs.filter(h => h !== han) : favs.concat(han);
+  saveFavs(favs);
+  renderVocab(); // 重绘以更新星标
+}
+
+let currentVocabCat = "问候礼貌";
+function renderVocabTabs() {
+  const cats = ["全部"].concat(VOCAB.map(v => v.cat));
+  $("#vocab-tabs").innerHTML = `<div class="vocab-tabs">` + cats.map(c =>
+    `<button class="vtab ${c === currentVocabCat ? "active" : ""}" onclick="switchVocabCat('${c}')">${esc(c)}</button>`
+  ).join("") + `</div>`;
+}
+function switchVocabCat(cat) {
+  currentVocabCat = cat;
+  renderVocabTabs();
+  renderVocab();
+}
+
+function flatVocab() {
+  return VOCAB.flatMap(v => v.items.map(it => Object.assign({ cat: v.cat }, it)));
+}
+function renderVocab() {
+  renderVocabTabs();
+  let items = flatVocab();
+  if (currentVocabCat !== "全部") items = items.filter(it => it.cat === currentVocabCat);
+  const favs = getFavs();
+  $("#vocab-grid").innerHTML = items.map(it => {
+    const isFav = favs.includes(it.han);
+    return `<div class="vcard ${isFav ? "fav" : ""}" onclick="speak('${esc(it.han)}')" title="点击听发音">
+      <div class="vc-left">
+        <div class="vc-han">${esc(it.han)}</div>
+        <div class="vc-jy">${esc(it.jy)}</div>
+        <div class="vc-mean">${esc(it.mean)}</div>
+      </div>
+      <div class="vc-right">
+        <button class="speak-btn" onclick="event.stopPropagation(); speak('${esc(it.han)}')">🗣️</button>
+        <button class="fav-btn ${isFav ? "active" : ""}" title="收藏"
+          onclick="event.stopPropagation(); toggleFav('${esc(it.han)}')">${isFav ? "★" : "☆"}</button>
+      </div>
+    </div>`;
+  }).join("");
+  if (!items.length) $("#vocab-grid").innerHTML = "<p class='hint'>没有内容。</p>";
+}
+
+/* ---------- 会话 ---------- */
+function renderPhrases() {
+  $("#phrase-list").innerHTML = PHRASES.map(p => `
+    <div class="phrase-row">
+      <div class="phr-main">
+        <div class="phr-han">${esc(p.han)}</div>
+        <div class="phr-jy">${esc(p.jy)}</div>
+        <div class="phr-mean">${esc(p.mean)}</div>
+      </div>
+      <div class="phr-actions">
+        <button class="speak-btn" title="慢速跟读" onclick="speak('${esc(p.han)}', 0.6)">🐢</button>
+        <button class="speak-btn" title="常速听" onclick="speak('${esc(p.han)}')">🗣️</button>
+      </div>
+    </div>`).join("");
+}
+
+/* ---------- 测验 ---------- */
+let quizState = null;
+
+function quizPool() {
+  // 词汇词条 + 会话句子，全部作为出题素材
+  const vocabItems = flatVocab().map(it => ({ han: it.han, jy: it.jy, mean: it.mean }));
+  const phraseItems = PHRASES.map(p => ({ han: p.han, jy: p.jy, mean: p.mean }));
+  return vocabItems.concat(phraseItems);
+}
+
+function startQuiz() {
+  const mode = document.querySelector('input[name="quizMode"]:checked').value;
+  const pool = quizPool();
+  const chosen = pick(pool, 10);
+  quizState = {
+    mode,
+    questions: chosen.map(item => makeQuestion(item, pool)),
+    index: 0,
+    score: 0,
+    wrong: [],
+    answered: false,
+  };
+  $("#quiz-config").classList.add("hidden");
+  $("#quiz-result").classList.add("hidden");
+  $("#quiz-box").classList.remove("hidden");
+  showQuestion();
+}
+
+function makeQuestion(correct, pool) {
+  // 干扰项：同 han 不同 jy 的也算重复，按（han, jy）去重
+  const key = it => it.han + "|" + it.jy;
+  const distractors = pick(pool.filter(it => key(it) !== key(correct)), 3);
+  const options = shuffle([correct].concat(distractors));
+  return { correct, options };
+}
+
+function showQuestion() {
+  const q = quizState.questions[quizState.index];
+  const mode = quizState.mode;
+  const promptKey = mode === "py2han" ? "jy" : mode === "han2py" ? "han" : "mean";
+  const answerKey = mode === "han2py" ? "jy" : "han";
+  const promptLabel = { py2han: "粤拼", han2py: "汉字", mean2han: "意思" }[mode];
+
+  $("#quiz-count").textContent = `第 ${quizState.index + 1} / ${quizState.questions.length} 题`;
+  $("#quiz-score").textContent = `得分 ${quizState.score}`;
+
+  const qText = q.correct[promptKey];
+  const target = mode === "han2py" ? "粤拼" : "汉字";
+  $("#quiz-question").innerHTML = `${esc(qText)}
+    <span class="sub">请选出对应的${target}（${esc(q.correct.mean)}）</span>`;
+  $("#quiz-answers").innerHTML = q.options.map((o, i) =>
+    `<button class="q-answer" data-i="${i}" onclick="answerQuiz(${i})">${esc(o[answerKey])}</button>`
+  ).join("");
+  $("#quiz-feedback").textContent = "";
+  $("#quiz-feedback").className = "quiz-feedback";
+  $("#quiz-next").disabled = true;
+  quizState.answered = false;
+
+  // 语音模式：py2han 时自动播放正确粤拼发音
+  if (mode === "py2han") speak(q.correct.han, 0.8);
+}
+
+function answerQuiz(i) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.questions[quizState.index];
+  const correct = q.correct;
+  const chosen = q.options[i];
+  const isRight = chosen === correct;
+
+  $$(".q-answer").forEach((btn, idx) => {
+    const o = q.options[idx];
+    btn.disabled = true;
+    if (o === correct) btn.classList.add("correct");
+    else if (idx === i) btn.classList.add("wrong");
+  });
+
+  const fb = $("#quiz-feedback");
+  if (isRight) {
+    quizState.score++;
+    fb.textContent = "✅ 答对啦！";
+    fb.className = "quiz-feedback ok";
+  } else {
+    quizState.wrong.push(correct);
+    fb.innerHTML = `❌ 正确答案：<b>${esc(correct.han)}</b>（${esc(correct.jy)}）${esc(correct.mean)}`;
+    fb.className = "quiz-feedback no";
+  }
+  $("#quiz-score").textContent = `得分 ${quizState.score}`;
+  $("#quiz-next").disabled = false;
+}
+
+function nextQuestion() {
+  quizState.index++;
+  if (quizState.index >= quizState.questions.length) { showResult(); return; }
+  showQuestion();
+}
+
+function showResult() {
+  $("#quiz-box").classList.add("hidden");
+  const total = quizState.questions.length;
+  const right = quizState.score;
+  const pct = Math.round((right / total) * 100);
+  const msg = pct === 100 ? "🎉 满分！你太犀利啦！" :
+              pct >= 80 ? "👍 好犀利！继续加油！" :
+              pct >= 60 ? "😊 唔错唔错，再练多几次！" :
+                          "💪 继续努力，听多啲、讲多啲！";
+  $("#quiz-result-title").textContent = `测验完成：${right} / ${total}（${pct} 分）`;
+  $("#quiz-result-text").textContent = msg;
+
+  $("#quiz-wrong-list").innerHTML = quizState.wrong.length
+    ? `<h3>错题回顾（已收录，可点击听发音）</h3>` + quizState.wrong.map(w =>
+        `<div class="wrong-item">
+           <b>${esc(w.han)}</b> ${esc(w.jy)} — ${esc(w.mean)}
+           <button class="speak-btn" style="float:right" onclick="speak('${esc(w.han)}', 0.6)">🗣️</button>
+         </div>`).join("")
+    : `<p class="hint">全部答对，没有错题！</p>`;
+
+  $("#quiz-result").classList.remove("hidden");
+}
+
+$("#quiz-start").addEventListener("click", startQuiz);
+$("#quiz-next").addEventListener("click", nextQuestion);
+$("#quiz-again").addEventListener("click", () => {
+  $("#quiz-result").classList.add("hidden");
+  $("#quiz-box").classList.remove("hidden");
+  startQuiz();
+});
+$("#quiz-back").addEventListener("click", () => {
+  $("#quiz-box").classList.add("hidden");
+  $("#quiz-result").classList.add("hidden");
+  $("#quiz-config").classList.remove("hidden");
+});
+
+/* ---------- 初始化 ---------- */
+renderDaily();
+renderTones();
+renderPhonemes();
+renderVocab();
+renderPhrases();
+
+</script>
+</body>
+</html>
